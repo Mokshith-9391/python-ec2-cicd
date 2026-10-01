@@ -1,15 +1,12 @@
 import unittest
-
-from app import get_message
+from app import HOST, PORT
 
 
 class TestApp(unittest.TestCase):
 
-    def test_get_message(self):
-        message = get_message()
-
-        self.assertIn("Mokshith", message)
-        self.assertIn("GitHub Actions", message)
+    def test_server_configuration(self):
+        self.assertEqual(HOST, "0.0.0.0")
+        self.assertEqual(PORT, 8000)
 
 
 if __name__ == "__main__":
