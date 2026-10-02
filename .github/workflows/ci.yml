@@ -58,7 +58,9 @@ jobs:
 
           set -e
 
+          echo "================================="
           echo "Starting deployment..."
+          echo "================================="
 
           cd ~/python-ec2-cicd
 
@@ -74,13 +76,39 @@ jobs:
           echo "Restarting systemd service..."
           sudo systemctl restart python-app
 
-          echo "Checking service status..."
+          echo "Checking systemd service..."
           sudo systemctl is-active --quiet python-app
 
-          echo "Testing application..."
-          curl -f http://localhost:8000
+          echo "Systemd service is active."
 
-          echo ""
-          echo "Deployment successful!"
+          echo "Waiting for application to become ready..."
+
+          for i in {1..10}; do
+
+            if curl -fsS http://localhost:8000; then
+              echo ""
+              echo "================================="
+              echo "Application is responding."
+              echo "Deployment successful!"
+              echo "================================="
+              exit 0
+            fi
+
+            echo "Application not ready yet. Attempt $i/10..."
+            sleep 2
+
+          done
+
+          echo "================================="
+          echo "Application failed to become ready."
+          echo "================================="
+
+          echo "Systemd status:"
+          sudo systemctl status python-app --no-pager -l
+
+          echo "Application logs:"
+          sudo journalctl -u python-app -n 30 --no-pager
+
+          exit 1
 
           EOF
