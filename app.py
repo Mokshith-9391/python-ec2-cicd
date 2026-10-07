@@ -7,7 +7,7 @@ PORT = 8000
 class RequestHandler(BaseHTTPRequestHandler):
 
     def do_GET(self):
-        message = "Hello Mokshith - Version 2"
+        message = "Hello Mokshith - Version 3"
 
         self.send_response(200)
         self.send_header("Content-type", "text/plain")
